@@ -21,6 +21,7 @@ parser.add_argument("name", type=str, nargs="?", default="remarkable", help="SSH
 parser.add_argument("-r", "--renderers", default=["render_usb.py"], nargs="+", metavar="EX", help="list of one or more executables EX in this project's directory such that \"EX infile outfile\" renders a reMarkable document with stem infile to the PDF outfile (default: render_usb.py - using the official USB web interface renderer)")
 parser.add_argument("-v", "--verbose", action="store_true", help="print executed shell commands")
 parser.add_argument("-s", "--skip", default=["Quick sheets"], nargs="*", help="skip file names (default: skip \"Quick sheets\"; pass empty -s to include)")
+parser.add_argument("-y", "--yes", action="store_true", help="auto-confirm all actions (for non-interactive/automated use)")
 
 # TODO: --favorites-only (or by tags)
 # TODO: --pull-only, --push-only, --backup, etc?
@@ -529,7 +530,10 @@ if __name__ == "__main__":
         print("Did nothing (everything was up-to-date)")
         exit()
     else:
-        answer = input(f"Pull {npull}, push {npush} and drop {ndrop} files (y/n)? ")
+        if args.yes:
+            answer = "y"
+        else:
+            answer = input(f"Pull {npull}, push {npush} and drop {ndrop} files (y/n)? ")
         if answer != "y": # accept nothing but a resounding yes
             print("Aborted (no changes have been made)")
             exit()
